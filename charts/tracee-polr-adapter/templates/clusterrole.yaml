@@ -1,0 +1,22 @@
+{{- if .Values.rbac.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    {{- include "tracee-polr-adapter.labels" . | nindent 4 }}
+  name: {{ include "tracee-polr-adapter.fullname" . }}
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - policyreports
+  - policyreports/status
+  - clusterpolicyreports
+  - clusterpolicyreports/status
+  verbs:
+  - get
+  - create
+  - update
+  - delete
+{{- end -}}

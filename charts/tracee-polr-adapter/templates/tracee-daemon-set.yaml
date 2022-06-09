@@ -1,0 +1,45 @@
+{{- if .Values.tracee.enabled -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "tracee-polr-adapter.fullname" . }}
+  labels:
+    {{- include "tracee-polr-adapter.labels" . | nindent 4 }}
+    app.kubernetes.io/name: tracee
+    app.kubernetes.io/component: tracee
+    app.kubernetes.io/part-of: tracee
+spec:
+  selector:
+    matchLabels:
+      {{- include "tracee-polr-adapter.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "tracee-polr-adapter.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.tracee.securityContext | nindent 12 }}
+          image: "{{ .Values.tracee.image.repository }}:{{ .Values.tracee.image.tag }}"
+          imagePullPolicy: {{ .Values.tracee.image.pullPolicy }}
+          args:
+            - --webhook http://{{ include "tracee-polr-adapter.fullname" . }}:{{ .Values.service.port }}
+            - --webhook-template ./templates/rawjson.tmpl
+            - --webhook-content-type application/json
+          env:
+            {{- toYaml .Values.tracee.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.tracee.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.tracee.resources | nindent 12 }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      volumes:
+        {{- toYaml .Values.tracee.volumes | nindent 8 }}
+{{- end -}}

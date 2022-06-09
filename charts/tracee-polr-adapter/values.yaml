@@ -1,0 +1,125 @@
+# Default values for tracee-polr-adapter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+image:
+  registry: ghcr.io
+  repository: fjogeleit/tracee-polr-adapter
+  pullPolicy: IfNotPresent
+  tag: 0.0.1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+rbac:
+  enabled: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  runAsUser: 1234
+  runAsNonRoot: true
+  privileged: false
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+tracee:
+  enabled: true
+  
+  image:
+    registry: docker.io
+    repository: aquasec/tracee
+    pullPolicy: Always
+    tag: full-dev
+  
+  securityContext:
+    privileged: true
+  
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  env:
+    - name: LIBBPFGO_OSRELEASE_FILE
+      value: /etc/os-release-host
+
+  volumes:
+    - hostPath:
+        path: /etc/os-release
+      name: etc-os-release
+    - hostPath:
+        path: /usr/src
+      name: src
+    - hostPath:
+        path: /lib/modules
+      name: modules
+    - hostPath:
+        path: /run/k3s/containerd
+      name: socket
+
+  volumeMounts:
+    - name: etc-os-release
+      mountPath: /etc/os-release-host
+      readOnly: true
+    - name: modules
+      mountPath: /lib/modules
+      readOnly: true
+    - name: src
+      mountPath: /usr/src
+      readOnly: true
+    - name: socket
+      mountPath: /var/run/containerd
+      readOnly: true
+
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+
+  affinity: {}
