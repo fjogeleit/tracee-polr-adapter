@@ -48,3 +48,7 @@ Otherwise you need to configure the adapter as webhook yourself:
             - --webhook-content-type application/json
 ...
 ```
+
+### Screenshots
+
+![Policy Reporter UI - Tracee Screenshot](https://github.com/fjogeleit/tracee-polr-adapter/blob/main/images/tracee.png?raw=true)
