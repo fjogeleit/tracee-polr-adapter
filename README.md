@@ -1,6 +1,6 @@
 # Tracee PolicyReport Adapter
 
-Can be used as webhook for [tracee](https://github.com/aquasecurity/tracee), to convert violations into the unified PolicyReport and ClusterPolicyReport from the Kubernetes Policy Working Group. This makes it possible to use tooling like [Policy Reporter](https://github.com/kyverno/policy-reporter) for tracee as well.
+Can be used as webhook for [tracee](https://github.com/aquasecurity/tracee), to convert events into the unified PolicyReport and ClusterPolicyReport from the Kubernetes Policy Working Group. This makes it possible to use tooling like [Policy Reporter](https://github.com/kyverno/policy-reporter) for tracee as well.
 
 ## Pre Requirements
 
@@ -30,6 +30,8 @@ rules:
 ```
 
 ### Tracee
+
+Currently the adapter requires the `(full-)dev` version of `tracee` is required to have the Pod information into tracee events.
 
 It is possible to also install __tracee__ with this Helm Chart with `--set tracee.enabled=true`. In this case the adapter will be preconfigured as tracee webhook.
 
