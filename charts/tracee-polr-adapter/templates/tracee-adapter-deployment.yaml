@@ -4,9 +4,6 @@ metadata:
   name: {{ include "tracee-polr-adapter.fullname" . }}
   labels:
     {{- include "tracee-polr-adapter.labels" . | nindent 4 }}
-    app.kubernetes.io/name: tracee-polr-adapter
-    app.kubernetes.io/component: tracee-polr-adapter
-    app.kubernetes.io/part-of: tracee
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -14,10 +11,11 @@ spec:
       {{- include "tracee-polr-adapter.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config: {{ include (print .Template.BasePath "/config.yaml") . | sha256sum | quote }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "tracee-polr-adapter.selectorLabels" . | nindent 8 }}
     spec:
@@ -32,7 +30,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -40,14 +38,24 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /ready
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-file
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: config-file
+          configMap:
+            name: {{ include "tracee-polr-adapter.fullname" . }}-config
+            optional: true
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

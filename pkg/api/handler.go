@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
+	"log"
 	"net/http"
 
 	"github.com/fjogeleit/tracee-polr-adapter/pkg/kubernetes"
@@ -44,19 +45,19 @@ func WebhookHandler(polrClient *kubernetes.Client, filter *tracee.Filter) http.H
 
 		err := json.NewDecoder(req.Body).Decode(&event)
 		if err != nil {
+			log.Printf("[ERROR] unable to convert event: %s\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, `{ "message": "%s" }`, html.EscapeString(err.Error()))
 			return
 		}
 
 		if s, ok := event.SigMetadata.Properties[tracee.SeverityKey]; ok {
-			if severity, ok := s.(int); ok {
-				event.SigMetadata.Severity = severity
+			if severity, ok := s.(float64); ok {
+				event.SigMetadata.Severity = int(severity)
 			}
 
 			delete(event.SigMetadata.Properties, tracee.SeverityKey)
 		}
-
 		if filter.Check(event) {
 			err = polrClient.ProcessEvent(req.Context(), event)
 			if err != nil {

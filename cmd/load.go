@@ -10,6 +10,7 @@ import (
 
 func loadConfig(cmd *cobra.Command) (*config.Config, error) {
 	v := viper.New()
+	v.SetDefault("results.maxPerReport", 200)
 
 	cfgFile := ""
 

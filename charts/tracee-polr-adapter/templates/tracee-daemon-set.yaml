@@ -5,9 +5,6 @@ metadata:
   name: {{ include "tracee-polr-adapter.fullname" . }}
   labels:
     {{- include "tracee-polr-adapter.labels" . | nindent 4 }}
-    app.kubernetes.io/name: tracee
-    app.kubernetes.io/component: tracee
-    app.kubernetes.io/part-of: tracee
 spec:
   selector:
     matchLabels:
@@ -21,12 +18,13 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.tracee.securityContext | nindent 12 }}
-          image: "{{ .Values.tracee.image.repository }}:{{ .Values.tracee.image.tag }}"
+          image: "{{ .Values.tracee.image.registry }}/{{ .Values.tracee.image.repository }}:{{ .Values.tracee.image.tag }}"
           imagePullPolicy: {{ .Values.tracee.image.pullPolicy }}
           args:
-            - --webhook http://{{ include "tracee-polr-adapter.fullname" . }}:{{ .Values.service.port }}
+            - --webhook http://{{ include "tracee-polr-adapter.fullname" . }}:{{ .Values.service.port }}/webhook
             - --webhook-template ./templates/rawjson.tmpl
             - --webhook-content-type application/json
+            - --output-template ./templates/rawjson.tmpl
           env:
             {{- toYaml .Values.tracee.env | nindent 12 }}
           volumeMounts:
@@ -40,6 +38,7 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         {{- toYaml .Values.tracee.volumes | nindent 8 }}
 {{- end -}}

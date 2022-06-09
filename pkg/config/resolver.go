@@ -48,7 +48,7 @@ func (r *Resolver) Server() (api.Server, error) {
 
 // Filter resolver method
 func (r *Resolver) Filter() *tracee.Filter {
-	return tracee.NewFilter(r.config.Results.MinimumSeverity)
+	return tracee.NewFilter(r.config.Results.MinimumSeverity, r.config.Rules.Exclude)
 }
 
 // NewResolver constructor function

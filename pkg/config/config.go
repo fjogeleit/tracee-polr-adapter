@@ -16,10 +16,16 @@ type Results struct {
 	MinimumSeverity int `mapstructure:"minimumSeverity"`
 }
 
+// Results configuration
+type Rules struct {
+	Exclude []string `mapstructure:"exclude"`
+}
+
 // Config of the Tracee Adapter
 type Config struct {
 	Kubeconfig string    `mapstructure:"kubeconfig"`
 	Profiling  Profiling `mapstructure:"profiling"`
 	Webhook    Webhook   `mapstructure:"webhook"`
 	Results    Results   `mapstructure:"results"`
+	Rules      Rules     `mapstructure:"rules"`
 }

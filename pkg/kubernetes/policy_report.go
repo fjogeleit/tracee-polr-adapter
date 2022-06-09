@@ -75,7 +75,7 @@ func (p *Client) handleClusterScoped(ctx context.Context, event tracee.Event) er
 	return nil
 }
 
-func (p *Client) updateResults(event tracee.Event, results []*v1alpha2.PolicyReportResult, summary *v1alpha2.PolicyReportSummary) []*v1alpha2.PolicyReportResult {
+func (p *Client) updateResults(event tracee.Event, results []v1alpha2.PolicyReportResult, summary *v1alpha2.PolicyReportSummary) []v1alpha2.PolicyReportResult {
 	if p.maxResults > 0 && len(results) >= p.maxResults {
 		index := len(results) - p.maxResults
 		removed := results[index]
@@ -90,7 +90,7 @@ func (p *Client) updateResults(event tracee.Event, results []*v1alpha2.PolicyRep
 	return append(results, result)
 }
 
-func removeResultFromSummary(sum *v1alpha2.PolicyReportSummary, result *v1alpha2.PolicyReportResult) {
+func removeResultFromSummary(sum *v1alpha2.PolicyReportSummary, result v1alpha2.PolicyReportResult) {
 	if result.Result == v1alpha2.StatusSkip {
 		sum.Skip--
 	}
@@ -108,7 +108,7 @@ func removeResultFromSummary(sum *v1alpha2.PolicyReportSummary, result *v1alpha2
 	}
 }
 
-func addResultToSummary(sum *v1alpha2.PolicyReportSummary, result *v1alpha2.PolicyReportResult) {
+func addResultToSummary(sum *v1alpha2.PolicyReportSummary, result v1alpha2.PolicyReportResult) {
 	if result.Result == v1alpha2.StatusSkip {
 		sum.Skip++
 	}

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"flag"
+	"log"
 
 	"github.com/fjogeleit/tracee-polr-adapter/pkg/config"
 	"github.com/spf13/cobra"
@@ -17,6 +18,13 @@ func newRunCMD() *cobra.Command {
 			c, err := loadConfig(cmd)
 			if err != nil {
 				return err
+			}
+
+			if c.Results.MaxPerReport > 0 {
+				log.Printf("max results per report: %d", c.Results.MaxPerReport)
+			}
+			if c.Results.MinimumSeverity > 0 {
+				log.Printf("minimum priority: %d", c.Results.MinimumSeverity)
 			}
 
 			var k8sConfig *rest.Config

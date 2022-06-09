@@ -13,6 +13,14 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+results:
+  maxPerReport: 200
+  minimumSeverity: 1
+
+rules:
+  # exclude rules by ID. e.g. ["TRC-1"]
+  exclude: []
+
 rbac:
   enabled: true
 
@@ -65,7 +73,7 @@ tolerations: []
 affinity: {}
 
 tracee:
-  enabled: true
+  enabled: false
   
   image:
     registry: docker.io
@@ -99,7 +107,7 @@ tracee:
         path: /lib/modules
       name: modules
     - hostPath:
-        path: /run/k3s/containerd
+        path: /var/run/containerd
       name: socket
 
   volumeMounts:

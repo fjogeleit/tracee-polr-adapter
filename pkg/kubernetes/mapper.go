@@ -33,26 +33,32 @@ var (
 	}
 )
 
-func MapEvent(event tracee.Event) *v1alpha2.PolicyReportResult {
+func MapEvent(event tracee.Event) v1alpha2.PolicyReportResult {
 	var category, rule string
 
 	if c, ok := event.SigMetadata.Properties[tracee.CategoryKey]; ok {
 		if cString, ok := c.(string); ok {
 			parts := strings.Split(cString, ":")
 			category = strings.TrimSpace(parts[0])
-			rule = strings.TrimSpace(parts[1])
+			rule = cString
 		}
 
 		delete(event.SigMetadata.Properties, tracee.CategoryKey)
 	}
 
 	props := map[string]string{
-		"version":     event.SigMetadata.Version,
-		"eventName":   event.Context.EventName,
-		"eventID":     fmt.Sprint(event.Context.EventID),
-		"processName": event.Context.ProcessName,
-		"returnValue": fmt.Sprint(event.Context.ReturnValue),
-		"resultID":    GeneratePolicyReportResultID(event.Context.ContainerID, event.Context.EventID, event.Context.Timestamp),
+		"version":        event.SigMetadata.Version,
+		"eventName":      event.Context.EventName,
+		"eventID":        fmt.Sprint(event.Context.EventID),
+		"processName":    event.Context.ProcessName,
+		"processID":      fmt.Sprint(event.Context.ProcessID),
+		"hostName":       event.Context.HostName,
+		"cgroupID":       fmt.Sprint(event.Context.CgroupID),
+		"userID":         fmt.Sprint(event.Context.UserID),
+		"mountNamespace": fmt.Sprint(event.Context.MountNamespace),
+		"pidNamespace":   fmt.Sprint(event.Context.PidNamespace),
+		"returnValue":    fmt.Sprint(event.Context.ReturnValue),
+		"resultID":       GeneratePolicyReportResultID(event.Context.ContainerID, event.Context.EventID, event.Context.Timestamp),
 	}
 
 	if event.Context.ContainerID != "" {
@@ -64,14 +70,17 @@ func MapEvent(event tracee.Event) *v1alpha2.PolicyReportResult {
 	if event.Context.ContainerImage != "" {
 		props["containerImage"] = event.Context.ContainerImage
 	}
+	for _, arg := range event.Context.Args {
+		props["arg."+arg.Name] = fmt.Sprint(arg.Value)
+	}
 
 	for k, v := range event.SigMetadata.Properties {
 		props[k] = fmt.Sprint(v)
 	}
 
-	var resources = make([]*corev1.ObjectReference, 0)
+	var resources = make([]corev1.ObjectReference, 0)
 	if event.Context.PodName != "" {
-		resources = append(resources, &corev1.ObjectReference{
+		resources = append(resources, corev1.ObjectReference{
 			Namespace:  event.Context.PodNamespace,
 			Name:       event.Context.PodName,
 			UID:        types.UID(event.Context.PodUID),
@@ -80,12 +89,12 @@ func MapEvent(event tracee.Event) *v1alpha2.PolicyReportResult {
 		})
 	}
 
-	return &v1alpha2.PolicyReportResult{
+	return v1alpha2.PolicyReportResult{
 		Category:   category,
 		Policy:     event.SigMetadata.Name,
 		Rule:       rule,
 		Result:     MapResult(event.SigMetadata.Severity),
-		Severity:   MapServerity(event.SigMetadata.Severity),
+		Severity:   MapServerityFromInt(event.SigMetadata.Severity),
 		Message:    event.SigMetadata.Description,
 		Resources:  resources,
 		Source:     source,
@@ -94,7 +103,7 @@ func MapEvent(event tracee.Event) *v1alpha2.PolicyReportResult {
 	}
 }
 
-func MapServerity(severity Severity) v1alpha2.PolicySeverity {
+func MapServerityFromInt(severity Severity) v1alpha2.PolicySeverity {
 	if severity == informative {
 		return ""
 	} else if severity == low {
@@ -104,6 +113,18 @@ func MapServerity(severity Severity) v1alpha2.PolicySeverity {
 	}
 
 	return v1alpha2.SeverityHigh
+}
+
+func MapServerityFrom(severity string) Severity {
+	if severity == "" {
+		return informative
+	} else if severity == v1alpha2.SeverityLow {
+		return low
+	} else if severity == v1alpha2.SeverityMedium {
+		return medium
+	}
+
+	return high
 }
 
 func MapResult(severity Severity) v1alpha2.PolicyResult {
@@ -128,7 +149,7 @@ func CreatePolicyReport(ns string) *v1alpha2.PolicyReport {
 			Labels:    reportLabels,
 		},
 		Summary: v1alpha2.PolicyReportSummary{},
-		Results: []*v1alpha2.PolicyReportResult{},
+		Results: []v1alpha2.PolicyReportResult{},
 	}
 }
 
@@ -139,7 +160,7 @@ func CreateClusterPolicyReport() *v1alpha2.ClusterPolicyReport {
 			Labels: reportLabels,
 		},
 		Summary: v1alpha2.PolicyReportSummary{},
-		Results: []*v1alpha2.PolicyReportResult{},
+		Results: []v1alpha2.PolicyReportResult{},
 	}
 }
 
