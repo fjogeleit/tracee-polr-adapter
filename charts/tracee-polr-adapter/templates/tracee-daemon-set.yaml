@@ -24,7 +24,6 @@ spec:
             - --webhook http://{{ include "tracee-polr-adapter.fullname" . }}:{{ .Values.service.port }}/webhook
             - --webhook-template ./templates/rawjson.tmpl
             - --webhook-content-type application/json
-            - --output-template ./templates/rawjson.tmpl
           env:
             {{- toYaml .Values.tracee.env | nindent 12 }}
           volumeMounts:
