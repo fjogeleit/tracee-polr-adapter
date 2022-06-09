@@ -24,7 +24,7 @@ WORKDIR /app
 USER 1234
 
 COPY --from=builder /app/LICENSE.md .
-COPY --from=builder /app/build/trivy-operator-polr-adapter /app/tracee-polr-adapter
+COPY --from=builder /app/build/tracee-polr-adapter /app/tracee-polr-adapter
 
 EXPOSE 2112
 
