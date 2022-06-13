@@ -31,7 +31,7 @@ rules:
 
 ### Tracee
 
-Currently the adapter requires the `(full-)dev` version of `tracee` is required to have the Pod information into tracee events.
+Currently the adapter requires the `(full-)dev` version of `tracee` to have the Pod information into tracee events.
 
 It is possible to also install __tracee__ with this Helm Chart with `--set tracee.enabled=true`. In this case the adapter will be preconfigured as tracee webhook.
 
