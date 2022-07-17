@@ -43,9 +43,8 @@ jobs:
         with:
           push: true
           platforms: linux/amd64,linux/arm64
-          cache-from: type=registry,ref=ghcr.io/betreuer-plattform/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/betreuer-plattform/${{ env.IMAGE_NAME }}:buildcache,mode=max
-          build-args: LD_FLAGS="-s -w"
+          cache-from: type=registry,ref=ghcr.io/fjogeleit/tracee-polr-adapter:buildcache
+          cache-to: type=registry,ref=ghcr.io/fjogeleit/tracee-polr-adapter:buildcache,mode=max
           tags: |
             ghcr.io/fjogeleit/tracee-polr-adapter:latest
             ghcr.io/fjogeleit/tracee-polr-adapter:${{ steps.params.outputs.version }}
