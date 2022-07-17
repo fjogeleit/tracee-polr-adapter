@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   tracee-polr-adapter:
   - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2022-07-17T07:57:25.964522715Z"
+    description: Tracee PolicyReport Adapter
+    digest: 62b9bb434f6abaeefa546320c028a9c60a59cb869a031e258d58741b4b6b6265
+    name: tracee-polr-adapter
+    type: application
+    urls:
+    - https://github.com/fjogeleit/tracee-polr-adapter/releases/download/tracee-polr-adapter-0.1.0/tracee-polr-adapter-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
     appVersion: 0.0.1
     created: "2022-06-09T13:35:14.738226101Z"
     description: Tracee PolicyReport Adapter
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/fjogeleit/tracee-polr-adapter/releases/download/tracee-polr-adapter-0.0.1/tracee-polr-adapter-0.0.1.tgz
     version: 0.0.1
-generated: "2022-06-09T13:35:14.738231001Z"
+generated: "2022-07-17T07:57:25.964530816Z"
