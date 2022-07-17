@@ -78,8 +78,8 @@ tracee:
   image:
     registry: docker.io
     repository: aquasec/tracee
-    pullPolicy: Always
-    tag: full-dev
+    pullPolicy: IfNotPresent
+    tag: 0.8.0
   
   securityContext:
     privileged: true
@@ -93,36 +93,18 @@ tracee:
     #   memory: 128Mi
 
   env:
-    - name: LIBBPFGO_OSRELEASE_FILE
-      value: /etc/os-release-host
+    - name: CONTAINERS_ENRICHMENT
+      value: "1"
 
   volumes:
-    - hostPath:
-        path: /etc/os-release
-      name: etc-os-release
-    - hostPath:
-        path: /usr/src
-      name: src
-    - hostPath:
-        path: /lib/modules
-      name: modules
-    - hostPath:
-        path: /var/run/containerd
-      name: socket
+  #  - hostPath:
+  #      path: /var/run/containerd
+  #    name: socket
 
   volumeMounts:
-    - name: etc-os-release
-      mountPath: /etc/os-release-host
-      readOnly: true
-    - name: modules
-      mountPath: /lib/modules
-      readOnly: true
-    - name: src
-      mountPath: /usr/src
-      readOnly: true
-    - name: socket
-      mountPath: /var/run/containerd
-      readOnly: true
+  #  - name: socket
+  #    mountPath: /var/run/containerd
+  #    readOnly: true
 
   tolerations:
     - effect: NoSchedule

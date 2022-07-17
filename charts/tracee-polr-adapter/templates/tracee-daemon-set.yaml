@@ -27,6 +27,11 @@ spec:
           env:
             {{- toYaml .Values.tracee.env | nindent 12 }}
           volumeMounts:
+            - name: tmp-tracee
+              mountPath: /tmp/tracee
+            - name: etc-os-release
+              mountPath: /etc/os-release-host
+              readOnly: true
             {{- toYaml .Values.tracee.volumeMounts | nindent 12 }}
           resources:
             {{- toYaml .Values.tracee.resources | nindent 12 }}
@@ -39,5 +44,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        - name: tmp-tracee
+          hostPath:
+            path: /tmp/tracee
+        - name: etc-os-release
+          hostPath:
+            path: /etc/os-release
         {{- toYaml .Values.tracee.volumes | nindent 8 }}
 {{- end -}}
