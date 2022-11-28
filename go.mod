@@ -3,7 +3,7 @@ module github.com/fjogeleit/tracee-polr-adapter
 go 1.18
 
 require (
-	github.com/kyverno/kyverno v1.8.1
+	github.com/kyverno/kyverno v1.8.2
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b
