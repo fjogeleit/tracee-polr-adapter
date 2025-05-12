@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	github.com/kyverno/kyverno v1.11.4
 	github.com/spf13/cobra v1.9.1
-	github.com/spf13/viper v1.20.0
+	github.com/spf13/viper v1.20.1
 	golang.org/x/net v0.38.0
 	k8s.io/api v0.33.0
 	k8s.io/apimachinery v0.33.0
