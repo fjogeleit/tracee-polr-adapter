@@ -1,13 +1,14 @@
 module github.com/fjogeleit/tracee-polr-adapter
 
-go 1.18
+go 1.23.0
+
 toolchain go1.24.1
 
 require (
 	github.com/kyverno/kyverno v1.11.4
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.0
-	golang.org/x/net v0.37.0
+	golang.org/x/net v0.40.0
 	k8s.io/api v0.32.3
 	k8s.io/apimachinery v0.32.3
 	k8s.io/client-go v0.32.3
@@ -244,14 +245,14 @@ require (
 	go.uber.org/zap v1.26.0 // indirect
 	go4.org/intern v0.0.0-20230525184215-6c62f75575cb // indirect
 	go4.org/unsafe/assume-no-moving-gc v0.0.0-20230525183740-e7c30c78aeb2 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/oauth2 v0.25.0 // indirect
-	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/term v0.30.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/term v0.32.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	golang.org/x/tools v0.26.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
